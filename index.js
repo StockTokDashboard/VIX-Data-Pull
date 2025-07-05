@@ -13,7 +13,7 @@ app.use(cors());
 app.get('/vix', async (req, res) => {
   try {
     const response = await axios.get(
-      'https://api.polygon.io/v2/aggs/ticker/INDEX:CBOE_VIX/prev',
+      'https://api.polygon.io/v2/aggs/ticker/INDEX:VIX/prev',
       {
         params: {
           apiKey: process.env.POLYGON_API_KEY
