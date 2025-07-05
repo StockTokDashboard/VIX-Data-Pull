@@ -16,7 +16,7 @@ app.get('/vix', async (req, res) => {
     const result = response.data.chart.result[0];
     const vixClose = result.indicators.quote[0].close[0];
 
-    res.json({ vix: vixClose });
+    res.json({ vix: parseFloat(vixValue.toFixed(1)) });
   } catch (error) {
     console.error('Yahoo VIX fetch error:', error.message);
     res.status(500).json({ error: 'Failed to fetch VIX from Yahoo' });
