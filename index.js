@@ -10,16 +10,26 @@ app.use(cors());
 app.get('/vix', async (req, res) => {
   try {
     const response = await axios.get(
-      'https://query1.finance.yahoo.com/v8/finance/chart/^VIX?interval=1d&range=1d'
+      'https://query1.finance.yahoo.com/v8/finance/chart/%5EVIX'
     );
 
-    const result = response.data.chart.result[0];
-    const vixClose = result.indicators.quote[0].close[0];
+    const results = response.data.chart.result;
 
-    res.json({ vix: parseFloat(vixValue.toFixed(1)) });
+    if (
+      results &&
+      Array.isArray(results) &&
+      results[0]?.meta?.regularMarketPrice !== undefined
+    ) {
+      const vixRaw = results[0].meta.regularMarketPrice;
+      const vixValue = Math.round(vixRaw * 10) / 10;  // 1 decimal place, safer than toFixed
+      res.json({ vix: vixValue });
+    } else {
+      throw new Error('VIX value not found in response');
+    }
+
   } catch (error) {
     console.error('Yahoo VIX fetch error:', error.message);
-    res.status(500).json({ error: 'Failed to fetch VIX from Yahoo' });
+    res.status(500).json({ error: 'Failed to fetch VIX' });
   }
 });
 
